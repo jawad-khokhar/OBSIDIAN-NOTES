@@ -1475,7 +1475,7 @@ TrafficLight signal = RED;
 ```
 
 ### Types of C++ Enumeration
- ##### Unscoped Enums:
+ ### Unscoped Enums:
  Values spill into the surrounding code scope, meaning you cannot reuse those names in other enums. They also implicitly convert directly to pure integers.
 
 ```cpp
@@ -1652,4 +1652,842 @@ int main() {
 }
 ```
 
+#                         Object Oriented Programming
+### Classes and Objects
+##### Definition:
+A class is a user-defined data type that acts as a blueprint or template for creating objects. It groups data variables (attributes) and functions (behavior) together into a single unit. An object is an instance of a class. When a class is defined, no memory is allocated, but memory is allocated when an object of that class is created.
+##### Logic:
+The class specifies what data the object will hold and what actions it can perform. The object is the actual entity you interact with in your program to execute those actions.
 
+```cpp
+// C++ Class Definitions
+class Car {
+public:
+    // Data Members (Attributes)
+    int speed; 
+    
+    // Member Function (Behavior)
+    void drive() { 
+        speed = 60;
+    }
+};
+
+int main() {
+    // C++ Objects creation
+    Car myCar; // Creating an instance/object of class Car
+    return 0;
+}
+```
+##### Where to use:
+Use classes and objects when you need to model real-world entities, manage complex data systems, or modularize code so that data and related actions are bundled tightly together.
+### Accessing the Data Members
+##### Definition:
+Accessing data members means reading from or writing values to the internal variables stored within a specific object instance.
+##### logic:
+In C++, you use the dot operator (`.`) to access public data members directly through the object variable. If you are working with a pointer to an object, you use the arrow operator (`->`).
+
+```cpp
+class Student {
+public:
+    int rollNumber; // Data member
+};
+
+int main() {
+    Student s1;
+    
+    // Accessing (Writing) data member using dot operator
+    s1.rollNumber = 24; 
+    
+    // Accessing (Reading) data member
+    int id = s1.rollNumber; 
+    
+    // Accessing via pointer
+    Student* ptr = &s1;
+    ptr->rollNumber = 25; // Arrow operator syntax
+    
+    return 0;
+}
+```
+
+##### Where to use:
+Use direct member access when the variables are declared public and you need to set initial states or retrieve current attributes of an object in execution logic.
+### C++ Class Member Functions
+
+##### Definition:
+Member functions are functions that are declared or defined inside a class definition. They have access to all the data members of the class, even private ones.
+##### Logic:
+They define the capabilities and actions an object can perform. They can be implemented directly inside the class body, or declared inside the class and defined later outside the class using the scope resolution operator (`::`).
+
+```cpp
+class Device {
+public:
+    // Defining Member Function inside the Class
+    void turnOn() {
+        // Logic executed directly inside the class
+    }
+    
+    // Declaring Member Function inside the Class
+    void turnOff(); 
+};
+
+// Defining Member Function outside the Class
+void Device::turnOff() {
+    // Logic executed outside the class using Scope Resolution Operator (::)
+}
+
+int main() {
+    Device phone;
+    
+    // Calling (Accessing) Member Functions
+    phone.turnOn();  
+    phone.turnOff(); 
+    return 0;
+}
+```
+
+##### Where to use:
+Use member functions to manipulate an object's internal data, execute operations related to the object, and abstract away specific execution steps from the global scope.
+
+### C++ Class Access Modifiers
+##### Definition:
+Access modifiers define the scope, visibility, and accessibility limits of class members (variables and functions). C++ uses three primary access modifiers: `public`, `private`, and `protected`.
+##### Logic:
+- **Public Access Modifier:** Members are accessible from anywhere outside the class.
+- **Private Access Modifier:** Members are only accessible by functions inside the class. They are completely hidden from the outside world. This is the default setting if no modifier is specified.
+- **Protected Access Modifier:** Members cannot be accessed from outside the class directly, but they can be accessed by derived child classes (inheritance).
+
+```cpp
+class Vault {
+private:
+    // Private Access Modifier
+    int password; 
+
+protected:
+    // Protected Access Modifier
+    int securityLevel; 
+
+public:
+    // Public Access Modifier
+    int publicId; 
+    
+    void setPassword(int p) { 
+        password = p; // Public function can access private members within the class
+    }
+};
+```
+
+##### Where to use:
+Use `private` by default for variables to protect internal state from accidental corruption (Encapsulation). Use `public` for functions that define the clean external interface of your object. Use `protected` when designing hierarchies where child structures require direct access to parent traits.
+
+### Static Members of a C++ Class
+##### Definition:
+A static member is a class member (data variable or function) that belongs to the class itself rather than to individual instances (objects) of the class. Only one copy of a static member exists, shared across every single object created from that class.
+##### Logic:
+Normal variables get reallocated fresh for every single object created. A static variable is allocated once in the global/static memory space at program startup and retains its value across all object instances. Static functions can only access static data members or other static functions within the class; they cannot look at non-static members because they do not belong to a specific object instance.
+
+```cpp
+class Counter {
+private:
+    // Static Data Member Declaration
+    static int count; 
+
+public:
+    Counter() {
+        count++; // Increments the shared counter every time an object is made
+    }
+    
+    // Static Function Members
+    static int getCount() { 
+        return count; // Can only access static data
+    }
+};
+
+// Static Data Member Initialization (Must be done outside the class)
+int Counter::count = 0; 
+
+int main() {
+    Counter c1;
+    Counter c2;
+    
+    // Accessing Static Data Members Using the Class Name
+    int total1 = Counter::getCount(); 
+    
+    // Accessing Static Data Members Using an Object
+    int total2 = c1.getCount(); 
+    
+    return 0;
+}
+```
+
+##### Where to use:
+Use Cases for Static Members:
+1. **Tracking object creation:** Counting how many total instances of a class are currently active in memory.
+2. **Maintaining global configurations or settings:** Storing system settings, application states, or environment flags that must apply identically to every object.
+3. **Cache or Shared Resource Management:** Handling unique, centralized buffers or network connections that all class instances need to point to.
+4. **Implementing design patterns like Singleton:** Building structures where you ensure only one universal instance of a class can ever be generated.
+5. **Tracking global counters or actions across objects:** Recording actions, hits, or operations globally across all instances of objects throughout the execution lifecycle.
+
+### C++ Static Member Function
+##### Definition:
+A static member function is a special function inside a class that belongs to the class itself rather than any individual object. It can be called without creating an instance of the class.
+##### Logic:
+Because it belongs to the class, a static member function does not receive an implicit `this` pointer. As a result, it can _only_ access static data members and other static member functions directly. It cannot read or modify non-static data members unless an object is explicitly passed to it.
+
+```cpp
+class MathUtils {
+private:
+    static int calculationCount; // Static data member
+    int instanceValue;          // Non-static data member
+
+public:
+    // Static Member Function
+    static int getCount() {
+        // Key features of Static Member Functions: Can access static members
+        calculationCount++; 
+        
+        // Error: return instanceValue; (Cannot access non-static data)
+        return calculationCount;
+    }
+};
+int MathUtils::calculationCount = 0;
+
+int main() {
+    // Called using the Class Name without making an object
+    int total = MathUtils::getCount(); 
+    return 0;
+}
+```
+
+##### Where to use:
+- **Key features of Static Member Functions:** They are shared across all class instances, they lack a `this` pointer, and they can be invoked directly via the class name using the scope resolution operator (`::`).
+- **When should static member functions be used?:** Use them to write utility/helper functions that operate strictly on global class variables or input arguments without needing object-specific state (e.g., counters, factory functions, or standalone math routines).
+
+### C++ Inline Functions
+##### Definition:
+An inline function is a function hint to the compiler where the compiler replaces the function call directly with the actual body code during compilation, rather than jumping back and forth in memory to execute it.
+##### Logic:
+When a normal function is called, the CPU saves the current instruction address, pushes arguments to the stack, jumps to the function code, runs it, and jumps back. Inline functions eliminate this jump overhead by copying the code directly to the call site. Note that the `inline` keyword is only a request; the compiler can ignore it if the function is too complex (e.g., contains loops or recursion).
+
+```cpp
+// Defining an Inline Function
+inline int square(int x) {
+    return x * x;
+}
+
+class Rectangle {
+private:
+    int width, height;
+public:
+    Rectangle(int w, int h) : width(w), height(h) {}
+
+    // Inline Function with Classes (Functions defined inside the class are implicitly inline)
+    int getArea() {
+        return width * height;
+    }
+};
+
+int main() {
+    // Compiler replaces this call with: int result = 5 * 5;
+    int result = square(5); 
+    return 0;
+}
+```
+
+##### Where to use:
+- **Advantages of Inline Function:** Eliminates function call overhead, saves stack allocation overhead, and speeds up execution for tiny operations.
+- **Disadvantages of Inline Function:** Can cause "code bloat" (increases binary file size) if a large function is inlined many times, which can ultimately slow down performance by hurting CPU cache efficiency. Use them strictly for short, fast, simple functions (like getters and setters).
+
+### C++ this Pointer
+##### Definition:
+The `this` pointer is an implicit, hidden pointer passed automatically to all non-static member functions. It points directly to the specific object instance that called the function.
+
+##### Logic:
+Every object gets its own copy of data members, but they all share the exact same member function code in memory. The `this` pointer is how the compiler figures out _which_ object's data to modify when a shared function is running.
+
+```cpp
+class Item {
+private:
+    int value;
+public:
+    Item(int value) {
+        // Characteristics of the "this" pointer: Used to resolve naming conflicts
+        this->value = value; // "this->value" is the private variable, "value" is the parameter
+    }
+
+    // Return Calling Object's Reference Using this Pointer
+    Item& setValue(int v) {
+        this->value = v;
+        return *this; // Returns a reference to the current object (enables method chaining)
+    }
+};
+```
+
+##### Where to use:
+- **this Pointer in Const Member Functions Vs Static Member Functions:** In a `const` member function, the type of `this` becomes a pointer to a constant object (`const Item* const`), preventing modifications to its data. In a `static` member function, `this` does not exist at all because static functions don't run on an instance.
+- **Common Use Cases of this Pointer:** Resolving ambiguity when local parameter names match member variable names, and returning `*this` from functions to allow method chaining (e.g., `obj.setValue(5).display();`).
+- **Limitations of this Pointer:** It is completely unavailable inside `static` member functions, it is a `const` pointer so its own address cannot be altered (`this = nullptr` is illegal), and it can lead to undefined behavior if used recklessly inside a destructor before an object is fully cleaned up.
+
+### C++ Friend Functions
+##### Definition:
+A friend function (or friend class) is an external function or class that is granted special permission to access the `private` and `protected` members of another class where it has been declared a friend.
+##### Logic:
+Friendship breaks the strict rules of encapsulation safely. The class itself must explicitly declare who its friends are using the `friend` keyword. Friendship is not mutual (if A is friends with B, B is not automatically friends with A) and it is not inherited.
+
+```cpp
+// Forward declaration
+class Box; 
+
+class Inspector {
+public:
+    // Friend Classes can access private data of other classes
+    void checkBox(Box& b);
+};
+
+class Box {
+private:
+    int width;
+
+public:
+    Box(int w) : width(w) {}
+
+    // Declaring Friend Function
+    friend void printWidth(Box& b); 
+    
+    // Declaring Friend Class Member Function
+    friend void Inspector::checkBox(Box& b); 
+};
+
+// Accessing Private and Protected Members directly
+void printWidth(Box& b) {
+    std::cout << b.width; // Allowed because printWidth is a friend
+}
+
+void Inspector::checkBox(Box& b) {
+    int w = b.width; // Allowed because Inspector is a friend class
+}
+```
+
+##### Where to use:
+- **Friend Function vs Member Function:** A member function is part of the class scope and has an implicit `this` pointer. A friend function is a regular global/external function with no `this` pointer, but with administrative bypass permissions.
+- **Use Cases:** Use friend functions primarily when overloading operators (like `<<` or `>>` for streams) that require access to private class variables but cannot be member functions of the class itself. Use friend classes when two distinct classes must cooperate closely and share private data fields directly without exposing public getters/setters.
+
+### Pointer to C++ Classes
+##### Definition:
+A pointer to a class is a pointer variable that holds the memory address of an object instance instead of holding a standard data type like an integer.
+##### Logic:
+When accessing class members through a standard object variable, you use the dot (`.`) operator. When accessing members through a pointer holding an object's address, you use the arrow (`->`) operator, which automatically dereferences the pointer first.
+
+```cpp
+class Node {
+public:
+    int data;
+    void print() {}
+};
+
+int main() {
+    Node obj;
+    obj.data = 10; // Standard access
+    
+    // Pointer to Classes
+    Node* ptr = &obj; // Stores the address of obj
+    ptr->data = 20;   // Accessing data member using arrow operator
+    ptr->print();     // Accessing member function using arrow operator
+    
+    return 0;
+}
+```
+
+##### Where to use:
+Use pointers to classes when implementing dynamic memory allocation via `new`, managing linked lists, trees, graphs, or taking advantage of runtime polymorphism where a base class pointer manages derived class objects.
+### C++ Class Constructor and Destructor
+##### Definition:
+A constructor is a special member function that executes automatically when an object of a class is created. A destructor is a special member function that executes automatically when an object goes out of scope or is explicitly deleted.
+##### Logic:
+- Constructors initialize the object's variables and set up resources. They share the exact name of the class and have no return type.
+- Destructors clean up resources (like freeing dynamic heap memory). They share the exact name of the class preceded by a tilde (`~`), take no arguments, and have no return type.
+
+```cpp
+class Sample {
+private:
+    int* ptr;
+    int id;
+
+public:
+    // C++ - Default Constructors (Implicitly generated if no constructors exist)
+    Sample() {
+        id = 0;
+        ptr = nullptr;
+    }
+
+    // Parameterized Constructor
+    // Using Initialization Lists to Initialize Fields directly before body executes
+    Sample(int val, int identification) : id(identification), ptr(new int(val)) {
+        // Constructor body
+    }
+
+    // The Class Destructor
+    ~Sample() {
+        delete ptr; // Deallocates heap memory to avoid leaks
+    }
+};
+```
+
+##### Where to use:
+- **Implicit vs Explicit Default Constructors:** If you do not write _any_ constructor, the compiler injects an **Implicit Default Constructor** that does nothing for basic types. If you define any constructor with parameters, the implicit one disappears, forcing you to write an **Explicit Default Constructor** (`Sample() = default;` or manual definition) if you still want to create blank objects.
+- **Use Cases:** Always use constructors to ensure objects don't start with random garbage values in memory. Always use destructors in any class handling open files, hardware channels, sockets, or raw pointers initialized via `new` to prevent memory leaks and crashes.
+
+### Default Constructor vs Parameterized Constructor
+##### Definition:
+A default constructor is a constructor that takes no arguments (or has default values for all arguments). A parameterized constructor is a constructor that accepts arguments to initialize an object's data members with specific custom values at the time of creation.
+##### Logic:
+- **Default Constructor:** If no values are passed during object creation, the default constructor runs. If you don't define any constructor, the compiler creates an implicit default constructor automatically.
+- **Parameterized Constructor:** It passes external data into the object's fields during declaration, preventing the object from holding uninitialized or blank states.
+
+```cpp
+class Account {
+private:
+    int balance;
+public:
+    // Default Constructor
+    Account() {
+        balance = 0;
+    }
+
+    // Parameterized Constructor
+    Account(int b) {
+        balance = b;
+    }
+};
+
+int main() {
+    // When Default Constructor Called?
+    Account acc1;       // Called here automatically because no arguments are given
+    
+    // Overloading the Default Constructor / Parameterized Constructor call
+    Account acc2(500);  // Runs the parameterized version
+    return 0;
+}
+```
+
+##### Where to use:
+Use a default constructor when you want all instances to start with a standard baseline or safe empty state (like a null pointer or zero balance). Use parameterized constructors when every object needs unique data immediately upon creation to be valid.
+### C++ - Parameterized Constructors
+##### Definition:
+A parameterized constructor explicitly defines arguments in its signature, allowing you to pass specific initialization parameters directly into your class attributes during instantiation.
+##### Logic:
+You can create multiple versions of parameterized constructors by changing the number, type, or sequence of the arguments (Constructor Overloading). Alternatively, you can provide default values inside a single constructor's parameter list; if an argument is missing during instantiation, the compiler substitutes your pre-defined fallback value.
+
+```cpp
+class Window {
+private:
+    int width;
+    int height;
+public:
+    // Multiple Parameterized Constructors (Constructor Overloading)
+    Window(int size) {
+        width = size;
+        height = size;
+    }
+
+    // Parameterized Constructors with Default Arguments
+    Window(int w, int h = 400) {
+        width = w;
+        height = h;
+    }
+};
+
+int main() {
+    Window square(200);       // Matches the single-argument overload
+    Window variable(300);     // Matches the default argument overload (width=300, height=400)
+    Window explicitWin(500, 600); // Overrides the default argument (width=500, height=600)
+    return 0;
+}
+```
+
+##### Where to use:
+- **Advantages of Using Parameterized Constructors:** It eliminates the need to call separate configuration helper functions (`init()`, `setup()`) right after creating an object. It enforces data validity from the very first line of execution.
+
+### C++ Copy Constructor
+##### Definition:
+A copy constructor is a member function that initializes a brand-new object using the data values of an already existing object of the same class type.
+##### Logic:
+It accepts a reference to another object of the same class as a constant parameter (`const ClassName& other`).
+
+- **Implicit Copy Constructor:** If you don't write one, the compiler creates a default version that performs a shallow copy (bitwise copy of variables).
+- **Explicit Copy Constructor:** If your class uses raw pointers to heap memory, an implicit shallow copy causes both objects to point to the exact same address, leading to double-free crashes. An explicit copy constructor must be written to perform a deep copy (allocating completely separate memory for the new object and copying the contents over).
+
+```cpp
+class ArrayHolder {
+private:
+    int* arr;
+    int size;
+public:
+    ArrayHolder(int s) {
+        size = s;
+        arr = new int[s];
+    }
+
+    // Explicit Copy Constructor to Create New Object safely
+    ArrayHolder(const ArrayHolder& other) {
+        size = other.size;
+        // Deep Copy vs. Shallow Copy logic: Allocate unique memory
+        arr = new int[size]; 
+        for (int i = 0; i < size; i++) {
+            arr[i] = other.arr[i];
+        }
+    }
+
+    ~ArrayHolder() {
+        delete[] arr;
+    }
+};
+
+int main() {
+    ArrayHolder first(5);
+    ArrayHolder second = first; // Triggers the explicit copy constructor safely
+    return 0;
+}
+```
+
+##### Where to use:
+- **Rule of Three/Five:** If your class requires a custom destructor to clean up memory, it almost certainly requires a custom copy constructor and a custom copy assignment operator (Rule of Three) to prevent memory bugs during object cloning.
+
+```cpp
+#include <iostream>
+
+class Buffer {
+private:
+    int* data;
+    int size;
+
+public:
+    // 1. STANDARD CONSTRUCTOR
+    Buffer(int s) {
+        size = s;
+        data = new int[s];
+        for (int i = 0; i < size; i++) {
+            data[i] = 0;
+        }
+    }
+
+    // 2. DESTRUCTOR
+    ~Buffer() {
+        delete[] data;
+    }
+
+    // 3. COPY CONSTRUCTOR
+    Buffer(const Buffer& other) {
+        size = other.size;
+        data = new int[size];
+        for (int i = 0; i < size; i++) {
+            data[i] = other.data[i];
+        }
+    }
+
+    // 4. COPY ASSIGNMENT OPERATOR
+    Buffer& operator=(const Buffer& other) {
+        if (this == &other) {
+            return *this;
+        }
+        delete[] data;
+        size = other.size;
+        data = new int[size];
+        for (int i = 0; i < size; i++) {
+            data[i] = other.data[i];
+        }
+        return *this;
+    }
+
+    // 5. MOVE CONSTRUCTOR
+    Buffer(Buffer&& other) noexcept {
+        data = other.data;
+        size = other.size;
+        other.data = nullptr;
+        other.size = 0;
+    }
+
+    // 6. MOVE ASSIGNMENT OPERATOR
+    Buffer& operator=(Buffer&& other) noexcept {
+        if (this == &other) {
+            return *this;
+        }
+        delete[] data;
+        data = other.data;
+        size = other.size;
+        other.data = nullptr;
+        other.size = 0;
+        return *this;
+    }
+};
+
+int main() {
+    // Calls 1: Standard Constructor (creates an initial buffer of size 10)
+    Buffer b1(10);          
+
+    // Calls 3: Copy Constructor (creates a brand new b2 by deep-copying b1)
+    Buffer b2 = b1;         
+    
+    // Calls 1: Standard Constructor for b3
+    Buffer b3(20);          
+    // Calls 4: Copy Assignment Operator (b3 already exists, so it cleans itself up and deep-copies b1)
+    b3 = b1;                
+
+    // Calls 5: Move Constructor (creates b4 fresh by stealing memory from temporary/r-value resource of b1)
+    Buffer b4 = std::move(b1); 
+
+    // Calls 6: Move Assignment Operator (b3 already exists, cleans itself up, and steals memory from b2)
+    b3 = std::move(b2);        
+
+    return 0;
+}
+
+```
+
+### C++ - Constructor Overloading
+##### Definition:
+Constructor overloading is the practice of declaring multiple constructors within the same class, where each constructor features a distinctly different parameter list (different numbers or types of parameters).
+##### Logic:
+The compiler automatically detects which constructor to execute at runtime by matching the number and data types of the arguments passed during initialization to the declared constructor signatures.
+
+```cpp
+class Coordinate {
+private:
+    int x, y;
+public:
+    // Constructor 1: Default
+    Coordinate() {
+        x = 0;
+        y = 0;
+    }
+
+    // Constructor 2: One parameter
+    Coordinate(int val) {
+        x = val;
+        y = val;
+    }
+
+    // Constructor 3: Two parameters
+    Coordinate(int xVal, int yVal) {
+        x = xVal;
+        y = yVal;
+    }
+};
+
+int main() {
+    Coordinate c1;        // Triggers Constructor 1
+    Coordinate c2(10);    // Triggers Constructor 2
+    Coordinate c3(5, 20); // Triggers Constructor 3
+    return 0;
+}
+```
+
+##### Where to use:
+Benefits of Constructor Overloading:
+
+1. **Flexibility in Object Initialization:** Allows objects to be built using whatever information is available at that specific moment in the application.
+2. **Cleaner and Readable Code with enhanced Code Maintainability:** Avoids writing multi-step conversion routines before an object can be instantiated.
+3. **Encapsulation of Initialization Logic:** Keeps the setups and fallback logic clean and entirely inside the class structure.
+4. **Simplifies Object Cloning (Copy Constructors):** Integrates clone behavior directly alongside standard configuration methods seamlessly.
+### C++ - Constructor with Default Arguments
+##### Definition:
+A constructor with default arguments is a constructor where one or more parameters are assigned a fallback literal value directly inside the function signature declaration.
+##### Logic:
+If you omit those arguments when creating the object, the compiler fills them in using the default assignments from right to left.
+- **Order of Default Arguments:** All parameters with default values must be placed at the far right of the parameter list. You cannot place a non-default parameter after a default parameter.
+
+```cpp
+class Timer {
+private:
+    int seconds;
+    int minutes;
+public:
+    // Constructor with Multiple Default Arguments
+    Timer(int m = 0, int s = 0) {
+        minutes = m;
+        seconds = s;
+    }
+};
+
+int main() {
+    Timer t1;        // Uses both defaults: minutes = 0, seconds = 0
+    Timer t2(5);     // Uses second default: minutes = 5, seconds = 0
+    Timer t3(10, 30); // Uses no defaults: minutes = 10, seconds = 30
+    return 0;
+}
+```
+
+##### Where to use:
+Key Features of Constructors with Default Arguments:
+1. **Default values for parameters and flexibility in object creation:** Lets you omit parameters for standard, routine scenarios while keeping the door open for custom values.
+2. **Avoiding multiple constructor overloads:** Saves you from writing three or four separate overloaded constructor blocks when default values can achieve the exact same behavior in a single line.
+3. **Default Arguments Can Be Used with Const Members:** Allows `const` variables to be populated with standard values safely via initialization lists before the constructor body runs.
+### C++ - Delegating Constructors
+##### Definition:
+A delegating constructor is a constructor that calls another constructor from the exact same class inside its initialization list to perform the core setup work.
+##### Logic:
+Instead of duplicating the initialization code across multiple constructors, one constructor hands off the execution responsibility to another version that matches the arguments it wants to pass.
+
+- **Rules for Using Delegating Constructors:** A constructor cannot both delegate and initialize data members in the same initialization list. The target constructor must be the _only_ thing inside the initialization list list, and you must avoid cyclic delegation (Constructor A calling B, while B calls A).
+
+```cpp
+class Player {
+private:
+    int health;
+    int score;
+public:
+    // Core target constructor that handles the actual work
+    Player(int h, int s) {
+        health = h;
+        score = s;
+    }
+
+    // Use of Delegating Constructors
+    Player() : Player(100, 0) {
+        // Code here runs AFTER the targeted constructor finishes
+    }
+
+    Player(int h) : Player(h, 0) {
+        // Code here runs AFTER the targeted constructor finishes
+    }
+};
+```
+##### Where to use:
+- **Advantages of Delegating Constructors:** It completely eliminates redundant initialization statements across multiple constructor blocks. This decreases code duplication, minimizes typo bugs, and ensures that modifications to baseline initialization logic only need to be written down in one central location.
+
+### C++ - Constructor Initialization List
+##### Definition:
+A constructor initialization list is used to initialize the data members of a class directly before the body of the constructor executes. It begins with a colon (`:`) followed by a comma-separated list of member initializers.
+##### Logic:
+Using an initialization list bypasses a two-step process. In a normal constructor body, variables are first created with default junk values and then assigned new values inside the braces. An initialization list explicitly initializes the values directly at the moment of creation, which is more efficient.
+
+```cpp
+class Vector {
+private:
+    int x;
+    int y;
+public:
+    // Why Use Constructor Initialization Lists? -> Directly initializes members
+    Vector(int xVal, int yVal) : x(xVal), y(yVal) {
+        // Constructor body can remain completely empty
+    }
+};
+```
+
+##### Where to use:
+- **Special Cases:** You are strictly forced to use initialization lists for:
+    1. **Const or Reference Members:** Non-static `const` data members and reference variables must be initialized immediately when they are created; they cannot be assigned values inside a constructor body.
+    2. **Base Class Initialization:** Passing arguments from a derived child class constructor up into a parent class constructor.
+
+### Dynamic Initialization Using Constructors in C++
+##### Definition:
+Dynamic initialization refers to assigning initial values to class data members or objects at runtime (while the program is executing) rather than at compile time, often utilizing variable inputs, calculations, or dynamic heap allocations.
+##### Logic:
+Instead of setting static hardcoded values, the constructor uses expressions, functions, or variable memory resources provided at runtime to determine the initial configuration of the object.
+
+```cpp
+class DynamicBox {
+private:
+    int* data;
+    int weight;
+public:
+    // Why Use Constructors for Dynamic Initialization? 
+    DynamicBox(int dynamicSize, int scaleFactor) {
+        // Allocates memory and performs math calculations at runtime
+        data = new int[dynamicSize]; 
+        weight = dynamicSize * scaleFactor;
+    }
+
+    ~DynamicBox() {
+        delete[] data;
+    }
+};
+```
+
+##### Where to use:
+Use dynamic initialization when object values depend on user inputs, data read from a file, system calculations, or when memory must be allocated on the heap during object instantiation.
+### Destructors in C++
+##### Definition:
+A destructor is a special member function that clears resources and performs cleanup automatically when a class object goes out of scope, terminates, or is explicitly removed via the `delete` operator.
+
+##### Logic:
+A destructor matches the exact name of the class but is preceded by a tilde symbol (`~`). It takes no parameters, returns no value, and cannot be overloaded.
+- **Automatic Destructor Call for Statically Allocated Objects:** Objects created on the stack are automatically destroyed when their closing block (`}`) is reached.
+- **Destructor for Dynamic Objects:** Objects created on the heap via `new` must have their destructors triggered explicitly by using the `delete` operator.
+- **Destructor Call Order for Multiple Objects:** Objects are destroyed in the exact reverse order of their construction (Last In, First Out).
+
+```cpp
+class ItemTracker {
+public:
+    // Defining a Destructor Inside a Class
+    ~ItemTracker() {
+        // Inline cleanup logic
+    }
+};
+
+class BigBuffer {
+private:
+    int* staticArr;
+    int* dynamicArr;
+public:
+    BigBuffer(int size) {
+        staticArr = new int[10]; // Static array layout allocation
+        dynamicArr = new int[size]; // Dynamic array allocation
+    }
+
+    // Why Do We Need Custom Destructors? -> To prevent massive memory leaks
+    // Properties of Destructors in C++: No parameters, no return type
+    ~BigBuffer(); 
+};
+
+// Defining a Destructor Outside a Class
+BigBuffer::~BigBuffer() {
+    // Destructors with Arrays logic:
+    delete[] staticArr;  // Using a Destructor with a Static Array layout
+    delete[] dynamicArr;  // Using a Destructor with a Dynamic Array
+}
+```
+
+##### Where to use:
+- **Common Mistakes While Working with Destructors:** Forgetting to use the array bracket format `delete[]` when deleting allocated arrays, which results in only the first element being freed and leaking the rest of the array. Always use custom destructors when a class holds raw system resources, opened files, database locks, or raw heap pointers.
+
+### Virtual Destructor in C++
+##### Definition:
+A virtual destructor is a destructor declared with the `virtual` keyword in a base parent class. It ensures that when a derived child class object is deleted through a base class pointer, the child class destructor is called first before the parent class destructor.
+##### Logic:
+If a parent class destructor is not marked virtual, deleting a derived child object via a parent pointer causes "undefined behavior" where the compiler only invokes the parent destructor. The child's specific destructor is completely skipped, leading to hidden leaks of any resources initialized inside the child class. Marking it virtual populates the _Virtual Destructor Table (Vtable)_, ensuring proper runtime tracking.
+
+```cpp
+class Base {
+public:
+    Base() {}
+    // Why We Need Virtual Destructors? -> Essential for safe polymophism
+    virtual ~Base() {
+        // Base cleanup
+    }
+};
+
+class Derived : public Base {
+private:
+    int* customLog;
+public:
+    Derived() {
+        customLog = new int[100];
+    }
+    // Automatically overrides parent virtual destructor
+    ~Derived() {
+        delete[] customLog; // Safely runs and avoids leaks
+    }
+};
+
+int main() {
+    // When to Use Virtual Destructors? -> Base pointer pointing to derived object
+    Base* polyPtr = new Derived(); 
+    
+    // Triggers Derived destructor first, then Base destructor via Vtable lookup
+    delete polyPtr; 
+    return 0;
+}
+```
+
+##### Where to use:
+Always declare a virtual destructor in any base class that features at least one virtual function and is intended to be used polymorphically via base class pointers or references.
